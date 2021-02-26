@@ -30,11 +30,12 @@ file = "files/04_highscore.txt"
 with open(file,"r",encoding="utf-8") as archivo:
     maxscore = int(archivo.read())
 
-
+#
 pygame.init()
 wdw = pygame.display.set_mode((ANCHO,ALTO))
 reloj = pygame.time.Clock()
 font = pygame.font.SysFont("consolas", 36)
+#
 
 
 
@@ -108,6 +109,14 @@ while True:
 
     while True:
         #Eventos
+
+        """
+        Acá funciona de esta forma:
+        Hay que recorrer todos los eventos que arroja el programa
+        Hay varios tipos (types): QUIT, KEYDOWN, KEYUP
+        
+        *** VER events.png***
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 jugando = False
