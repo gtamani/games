@@ -1,17 +1,18 @@
 import pygame
 import numpy as np
-import time
+import time, random, os
 
-wdw_size = 1000
-size_pixels = 20
-colors = {"black":(255,255,255),"gray":(128, 128, 128)}
+wdw_size = 900
+size_pixels = 15
+colors = {"white":(255,255,255),"gray":(128, 128, 128),"black":(0,0,0)}
 
 pygame.init()
 wdw = pygame.display.set_mode((wdw_size,wdw_size))
+pygame.display.set_caption("Game of life!")
 
 def grid(wdw_size,pixel):
     global matrix
-    wdw.fill((0, 0, 0))
+    wdw.fill(colors["black"])
 
     for x in range(0,wdw_size,pixel):
         for y in range(0,wdw_size,pixel):
@@ -29,11 +30,11 @@ def grid(wdw_size,pixel):
 
 
             if matrix[posx,posy] == 0 and neighbors == 3:
-                #Si una célula muerta posee 3 vecinas vivas, revive
+                # If a dead cell has 3 neighbors, it gets back to life.
                 matrix_copy[posx,posy] = 1
             elif matrix[posx,posy] == 1 and (neighbors < 2 or neighbors > 3):
-                #Si una célula viva posee 1 vecina o menos muere por soledad.
-                #Si una célula viva posee más de 3 vecinas muere por sobrepoblación.
+                # If a cell is alive and has one or none neighbors, it dies.
+                # If a cell has more than 3 neighbors, dies due to overpopulation.
                 matrix_copy[posx,posy] = 0
             else:
                 matrix_copy[posx,posy] = matrix[posx,posy]
@@ -42,10 +43,27 @@ def grid(wdw_size,pixel):
             if matrix_copy[posx,posy] == 0:
                 pygame.draw.polygon(wdw, colors["gray"], coordinates, 1)
             if matrix_copy[posx,posy] == 1:
-                pygame.draw.polygon(wdw, colors["black"], coordinates, 0)
+                pygame.draw.polygon(wdw, colors["white"], coordinates, 0)
 
     matrix = np.copy(matrix_copy)
 
+def save():
+    name = ""
+    for times in range(10):
+        name += random.choice("abcdefghijklmnopqrstuvwxyz123456789")
+    path = "saved/"+name+".txt"
+    np.savetxt(path, matrix, "%d")
+
+def change_plot(left,current_plot):
+    plots = os.listdir(os.getcwd()+os.sep+"saved")
+    current_plot += left
+    current_plot %= len(plots)
+    print(plots[current_plot])
+
+    return np.loadtxt("saved/"+plots[current_plot]),current_plot
+
+
+current_plot = 0
 playing,running = True,False
 speed = 0.05
 
@@ -55,6 +73,7 @@ matrix_copy = np.copy(matrix)
 grid(wdw_size, size_pixels)
 
 while playing:
+    # Main loop
     pygame.display.flip()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or event.type == pygame.K_ESCAPE:
@@ -67,21 +86,41 @@ while playing:
             y = ypos * size_pixels
             if matrix[ypos][xpos] == 0:
                 matrix[ypos][xpos] = 1
-                pygame.draw.polygon(wdw,colors["black"],[(x,y),(x+size_pixels,y),(x+size_pixels,y+size_pixels),(x,y+size_pixels)])
+                pygame.draw.polygon(wdw,colors["white"],[(x,y),(x+size_pixels,y),(x+size_pixels,y+size_pixels),(x,y+size_pixels)])
             else:
                 matrix[ypos][xpos] = 0
-                pygame.draw.polygon(wdw, (0, 0, 0),
+                pygame.draw.polygon(wdw, colors["black"],
                                     [(x, y), (x + size_pixels, y), (x + size_pixels, y + size_pixels),
                                      (x, y + size_pixels)])
                 pygame.draw.polygon(wdw, colors["gray"],
                                     [(x, y), (x + size_pixels, y), (x + size_pixels, y + size_pixels),
                                      (x, y + size_pixels)],1)
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                running = True
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if running:
+                        running = False
+                    else:
+                        running = True
+                if event.key == pygame.K_s:
+                    save()
+                if event.key == pygame.K_LEFT:
+                    matrix, current_plot = change_plot(-1,current_plot)
+                    wdw.fill(colors["black"])
+                    grid(wdw_size, size_pixels)
+                if event.key == pygame.K_RIGHT:
+                    matrix, current_plot = change_plot(1,current_plot)
+                    wdw.fill(colors["black"])
+                    grid(wdw_size, size_pixels)
+
+
+
+
+
 
     if running:
-        time.sleep(0.05)
+        time.sleep(0.02)
+
         grid(wdw_size,size_pixels)
         pygame.display.flip()
 

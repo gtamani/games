@@ -80,13 +80,13 @@ while running:
             running = False
         # Moverse
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_UP and mainPlayer.direction != "DOWN":
                 mainPlayer.direction = "UP"
-            if event.key == pygame.K_DOWN:
+            if event.key == pygame.K_DOWN and mainPlayer.direction != "UP":
                 mainPlayer.direction = "DOWN"
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT and mainPlayer.direction != "RIGHT":
                 mainPlayer.direction = "LEFT"
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT and mainPlayer.direction != "LEFT":
                 mainPlayer.direction = "RIGHT"
             if event.key == pygame.K_KP_ENTER:
                 mainPlayer.eat()
