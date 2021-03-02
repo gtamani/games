@@ -1,5 +1,12 @@
-Juegos realizados durante el curso de Python.
+Los clásicos de siempre, explorando la librería `pygame`.
 
-Otros, explorando la librería `pygame`.
+Juegos disponibles:
+  - Snake
+  - Asteroids
+  - Game of life
+  - Buscaminas
+  - 2048
+  - Ahorcado
+  - Muertos y Heridos
 
-![alt text](https://github.com/gtamani/games/games.jpg?raw=true)
+![games](https://user-images.githubusercontent.com/72049315/109672483-d8848e80-7b53-11eb-8e70-1793799e4f74.jpg)
