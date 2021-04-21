@@ -1,117 +1,95 @@
 import random,os,time
 
 #Funciones
-def move(visible,oculto,flags,jugador,mov,ancho,alto):
+def move(board,hiddenBoard,flags,player,mov,width,height):
     """
-    Desplaza al jugador por el tablero
-    :param jugador: Posición del jugador
-    :param movimiento: w/a/s/d
-    :return: Nueva posición
+    Player's movements throughout
     """
     admitted = False
-    v_temp = jugador
+    v_temp = player
 
     if mov.lower() == "w":
-        if jugador > ancho:
-            v_temp = jugador
-            jugador -= ancho
+        if player > width:
+            v_temp = player
+            player -= width
             admitted = True
     elif mov.lower() == "a":
-        if jugador % ancho != 1:
-            v_temp = jugador
-            jugador -= 1
+        if player % width != 1:
+            v_temp = player
+            player -= 1
             admitted = True
     elif mov.lower() == "s":
-        if jugador <= ancho*(alto-1):
-            v_temp = jugador
-            jugador += ancho
+        if player <= width*(height-1):
+            v_temp = player
+            player += width
             admitted = True
     elif mov.lower() == "d":
-        if jugador % ancho != 0:
-            v_temp = jugador
-            jugador += 1
+        if player % width != 0:
+            v_temp = player
+            player += 1
             admitted = True
 
-    #print(v_temp)
-    #print(jugador)
-    #print(visible)
-
-
-    #Intercambio de valores
+    #Values exchange
     if admitted:
-        visible[jugador] = "X"
-        if v_temp in bloques:
-            # bloques.append(pos_jugador)
-            if oculto[v_temp] == 0:
-                visible[v_temp] = " "
+        board[player] = "X"
+        if v_temp in blocks:
+            if hiddenBoard[v_temp] == 0:
+                board[v_temp] = " "
             else:
-                visible[v_temp] = oculto[v_temp]
+                board[v_temp] = hiddenBoard[v_temp]
         else:
-            visible[v_temp] = "_"
+            board[v_temp] = "_"
 
         if v_temp in flags:
-            print(flags,visible[v_temp] is True,visible[v_temp],v_temp)
-            # bloques.append(pos_jugador)
-            if visible[jugador] == "F":
-                visible[v_temp] = "_"
+            print(flags,board[v_temp] is True,board[v_temp],v_temp)
+            if board[player] == "F":
+                board[v_temp] = "_"
             else:
-                visible[v_temp] = "F"
+                board[v_temp] = "F"
 
-    #print(visible)
+    return player, board
 
-    return jugador, visible
-
-def boom(jugador,bombas):
+def boom(player,bombs):
     """
-    Verifica si en la selección había una bomba
-    :param jugador: Posición jugador
-    :param bombas: Posición Bombas
-    :return:
+    Check if a bomb was planted
     """
-    if jugador in bombas:
+    if player in bombs:
         return True
-    if jugador not in bloques:
-        bloques.append(jugador)
+    if player not in blocks:
+        blocks.append(player)
     return False
 
-def flag(visible,jugador,flags):
+def flag(board,player,flags):
     """
-    Plantar una bandera
-    :return:
+    Set a flag
     """
     print("flags: ", flags)
-    if jugador in flags:
-        flags.remove(jugador)
+    if player in flags:
+        flags.remove(player)
     else:
-        flags.append(jugador)
+        flags.append(player)
     print("flags: ", flags)
 
-    return visible,flags
+    return board,flags
 
-def settings(cant_minas,alto, ancho):
-    """
-    Configuraciones de juego
-    :param cant_minas:
-    :param alto:
-    :param ancho:
-    :return:
-    """
-    alto,ancho,minas = alto,ancho,cant_minas
+def settings(mines_quant,height, width):
+    height,width,mines = height,width,mines_quant
     os.system("cls")
+    
     print("*************************************************")
-    print("                  Buscaminas")
+    print("                  Mineswheeper")
     print("*************************************************")
     print()
     print()
     print("                   SETTINGS                ")
     print()
-    print("          Ancho del tablero: {}".format(ancho_tab))
-    print("          Alto del tablero: {}".format(alto_tab))
-    print("          Cantidad de minas: {}".format(cant_minas))
+    print("            Board's width: {}".format(board_width))
+    print("            Board's height: {}".format(board_height))
+    print("            Mines quantity: {}".format(mines_quant))
     print()
     print()
     print()
-    print("           Desea Configurarlo? (y/n)        ")
+    print("           Want to change settings? (y/n)        ")
     print()
     print("*************************************************")
     print()
@@ -128,14 +106,14 @@ def settings(cant_minas,alto, ancho):
     if ask == "y":
         os.system("cls")
         print("*************************************************")
-        print("                  Buscaminas")
+        print("                  Mineswheeper")
         print("*************************************************")
         print()
         print()
         print("                   SETTINGS                ")
         print()
         print()
-        print("          Alto del tablero?")
+        print("                Board height?")
         print()
         print()
         print()
@@ -146,18 +124,18 @@ def settings(cant_minas,alto, ancho):
         print()
         print("*************************************************")
 
-        alto = int(input())
+        height = int(input())
         os.system("cls")
 
         print("*************************************************")
-        print("                  Buscaminas")
+        print("                  Mineswheeper")
         print("*************************************************")
         print()
         print()
         print("                   SETTINGS                ")
         print()
         print()
-        print("          Ancho del tablero?")
+        print("                Board width?")
         print()
         print()
         print()
@@ -168,18 +146,18 @@ def settings(cant_minas,alto, ancho):
         print()
         print("*************************************************")
 
-        ancho = int(input())
+        width = int(input())
         os.system("cls")
 
         print("*************************************************")
-        print("                  Buscaminas")
+        print("                  Mineswheeper")
         print("*************************************************")
         print()
         print()
         print("                   SETTINGS                ")
         print()
         print()
-        print("          Cantidad de minas?")
+        print("               How many mines?")
         print()
         print()
         print()
@@ -190,26 +168,20 @@ def settings(cant_minas,alto, ancho):
         print()
         print("*************************************************")
 
-        minas = int(input())
+        mines = int(input())
     os.system("cls")
-    return minas,alto,ancho
-
-
-
-    pass
+    return mines,height,width
 
 def loose():
-    """
-    Tablero al perder
-    """
+
     os.system("cls")
 
     print("*************************************************")
-    print("                  Buscaminas")
+    print("                  Mineswheeper")
     print("*************************************************")
     print()
     print()
-    print("                    PERDISTE!                ")
+    print("                    YOU LOOSE!                ")
     print()
     print("            ")
     print()
@@ -217,7 +189,7 @@ def loose():
     print()
     print()
     print()
-    print("          Presione Enter para empezar...         ")
+    print("          Press Enter to continue...         ")
     print()
     print("*************************************************")
     print()
@@ -232,7 +204,7 @@ def win():
     os.system("cls")
 
     print("*************************************************")
-    print("                  Buscaminas")
+    print("                  Mineswheeper")
     print("*************************************************")
     print()
     print()
@@ -244,7 +216,7 @@ def win():
     print()
     print()
     print()
-    print("          Presione Enter para empezar...         ")
+    print("          Press Enter to continue...         ")
     print()
     print("*************************************************")
     print()
@@ -261,11 +233,11 @@ def intro():
     os.system("cls")
 
     print("*************************************************")
-    print("                  Buscaminas")
+    print("                  Mineswheeper")
     print("*************************************************")
     print()
     print()
-    print("                 BIENVENIDOS!                ")
+    print("                   WELCOME!                ")
     print()
     print("            ")
     print()
@@ -273,7 +245,7 @@ def intro():
     print()
     print()
     print()
-    print("          Presione Enter para empezar...         ")
+    print("          Press Enter to continue...         ")
     print()
     print("*************************************************")
     print()
@@ -285,114 +257,87 @@ def intro():
 
 def menu():
     print("*************************************************")
-    print("                  Buscaminas")
+    print("                  Mineswheeper")
     print("*************************************************")
     print()
     print()
-    print("                 BIENVENIDOS!                ")
+    print("                   WELCOME!                ")
     print()
-    print("              1. Iniciar Juego")
-    print("              2. Configuraciones")
-    print("              3. Salir")
+    print("              1. Start playing!")
+    print("              2. Settings")
+    print("              3. Exit")
     print()
     print()
     print()
-    print("            Seleccione una opción...         ")
+    print("            Please, select an option...         ")
     print()
     print("*************************************************")
     ask = input("")
     return ask
 
-def pistas(screen,pixel_mezcla,alto, ancho):
-    """
-    De una lista de bombas, sale un diccionario con las pistas, bombas
-    screen = Crea dos diccionarios, uno oculto y uno visible
-    """
+def clues(screen,pixels,height, width):
+    clues = {}
+    players_position = random.choice(pixels_list)
 
-    pistas = {}
-    pos_jugador = random.choice(pixeles)
+    if screen == "hidden":
 
+        for i in range(1, ((board_height * board_width) + 1)):
+            clues.setdefault(i, 0)
 
-    if screen == "oc":
+        for i in pixels:
 
-        for i in range(1, ((alto_tab * ancho_tab) + 1)):
-            pistas.setdefault(i, 0)
+            if i > width: 
+                up = i-width
+                clues[up] += 1
+                if i%width != 0: 
+                    clues[i-width+1] += 1
 
-        for i in pixel_mezcla:
+            if i%width != 0: 
+                clues[i+1] += 1
+                if i < width* (height-1): 
+                    clues[i+width+1] +=1
 
-            if i > ancho: #arriba
-                arriba = i-ancho
-                pistas[arriba] += 1
-                if i%ancho != 0: #arriba derecha
-                    pistas[i-ancho+1] += 1
+            if i < width* (height-1): 
+                clues[i+width] += 1
+                if i % width != 1: 
+                    clues[i + (width -1)] += 1
 
-            if i%ancho != 0: #derecha
-                pistas[i+1] += 1
-                if i < ancho* (alto-1): #derecha abajo
-                    pistas[i+ancho+1] +=1
-
-            if i < ancho* (alto-1): #abajo
-                pistas[i+ancho] += 1
-                if i % ancho != 1: #abajo izquierda
-                    pistas[i + (ancho -1)] += 1
-
-            if i%ancho != 1: #izquierda
-                pistas[i-1] += 1
-                if i > ancho: #izquierda arriba
-                    pistas[i - (ancho + 1)] +=1
+            if i%width != 1: 
+                clues[i-1] += 1
+                if i > width: 
+                    clues[i - (width + 1)] +=1
 
         print()
-        for i in pixel_mezcla:
-            pistas[i] = 9
+        for i in pixels:
+            clues[i] = 9
 
     else:
-        for i in range(1, ((alto_tab * ancho_tab) + 1)):
-            pistas.setdefault(i, "_")
-        pistas[pos_jugador] = "X"
-        return pistas, pos_jugador
-    return pistas
+        for i in range(1, ((board_height * board_width) + 1)):
+            clues.setdefault(i, "_")
+        clues[players_position] = "X"
+        return clues, players_position
+    return clues
 
-def sort_minas(alto,ancho,minas,pixeles):
+def sort_minas(height,width,mines,pixels_list):
     """
-    Sortea la posicion de las minas según los parametros
-    :return:
+    Sorts mines position 
     """
-    pixel_mezcla = list(pixeles)  # MINASSSS!!!!
-    random.shuffle(pixel_mezcla)
-    for times in range((alto_tab * ancho_tab) - cant_minas):
-        pixel_mezcla.pop()
-    pixel_mezcla.sort()
-    #print(pixel_mezcla)
-    return pixel_mezcla
+    pixels = list(pixels_list) 
+    random.shuffle(pixels)
+    for times in range((board_height * board_width) - mines_quant):
+        pixels.pop()
+    pixels.sort()
+    return pixels
 
-
-
-
-# Configuración tablero
-alto_tab, ancho_tab = 10,10
-cant_minas = 15
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Board config
+board_height, board_width = 10,10
+mines_quant = 15
 
 #Tablero Visible
-bloques = []
+blocks = []
 flags = []
 
-pixel_mezcla = None
+pixels = None
 
 
 
@@ -404,67 +349,57 @@ while True:
         if int(opc) == 3:
             break
         elif int(opc) == 2:
-            cant_minas,alto_tab,ancho_tab = settings(cant_minas,alto_tab,ancho_tab) #Configuraciones
+            mines_quant,board_height,board_width = settings(mines_quant,board_height,board_width) #Configuraciones
 
 
         elif int(opc) == 1:
             #Settings before starting the main loop
-            pixeles = list(range(1, (alto_tab * ancho_tab) + 1))
-            pixel_mezcla = sort_minas(alto_tab, ancho_tab, cant_minas,pixeles)
-            oculto = pistas("oc", pixel_mezcla, alto_tab, ancho_tab)
-            visible, pos_jugador = pistas("vis", pixel_mezcla, alto_tab, ancho_tab)
+            pixels_list = list(range(1, (board_height * board_width) + 1))
+            pixels = sort_minas(board_height, board_width, mines_quant,pixels_list)
+            hiddenBoard = clues("hidden", pixels, board_height, board_width)
+            board, players_position = clues("vis", pixels, board_height, board_width)
 
-            left = len(pixeles)-len(pixel_mezcla)
+            left = len(pixels_list)-len(pixels)
 
             while True:
                 os.system("cls")
                 print("*************************************************")
-                print("                  Buscaminas   Faltan barrer: {}".format(left))
+                print("                  Mineswheeper -  Blocks to sweep: {}".format(left))
                 print("*************************************************")
 
                 print(" (w/a/s/d)  -  move ")
-                print("     b      -  barrer ")
-                print("     f      -  plantar bandera ")
-                print("     q      -  salir ")
+                print("     b      -  sweep ")
+                print("     f      -  set flag ")
+                print("     q      -  quit ")
                 print()
 
-                matriz_oculta = []
-
-                #print("OCULTO:")
+                hidden_matrix = []
 
                 count = 0
-                for i in range(alto_tab):
-                    matriz_oculta.append([])
-                    for e in range(ancho_tab):
+                for i in range(board_height):
+                    hidden_matrix.append([])
+                    for e in range(board_width):
                         count += 1
-                        matriz_oculta[i].append(oculto[count])
+                        hidden_matrix[i].append(hiddenBoard[count])
 
-                #for i in matriz_oculta:
-                #    for a in i:
-                #        print(a, " ", end="")
-                #    print()
-                #print()
-
-                matriz_visible = []
+                visible_matrix = []
 
 
                 count = 0
-                for i in range(alto_tab):
-                    matriz_visible.append([])
-                    for e in range(ancho_tab):
+                for i in range(board_height):
+                    visible_matrix.append([])
+                    for e in range(board_width):
                         count += 1
-                        matriz_visible[i].append(visible[count])
+                        visible_matrix[i].append(board[count])
 
-                print("VISIBLE:")
-                for i in matriz_visible:
-                    print(" "*(len("*************************************************")-(ancho_tab*3)),end="")
+                for i in visible_matrix:
+                    print(" "*(len("*************************************************")-(board_width*3)),end="")
                     for a in i:
                         print(a," ",end="")
                     print()
                 print()
-                #print(pos_jugador,pixel_mezcla,bloques)
 
-                print("Seleccione un movimiento",end="")
+                print("Select a command --> ",end="")
                 while True:
                     try:
                         mov = input("")
@@ -473,43 +408,35 @@ while True:
                     else:
                         break
 
-                bomba = None
+                bomb = None
                 bandera = None
                 if mov.lower() == "b":
-                    bomba = boom(pos_jugador,pixel_mezcla)
-                    if bomba is True:
+                    bomb = boom(players_position,pixels)
+                    if bomb is True:
                         os.system("cls")
                         loose()
-                        bloques = []
+                        blocks = []
                         flags = []
                         break
                     left -= 1
-                    if pos_jugador % ancho_tab != 1:
-                        pos_jugador, visible = move(visible, oculto,flags, pos_jugador, "a", ancho_tab, alto_tab)
+                    if players_position % board_width != 1:
+                        players_position, board = move(board, hiddenBoard,flags, players_position, "a", board_width, board_height)
                     else:
-                        pos_jugador, visible = move(visible, oculto,flags, pos_jugador, "d", ancho_tab, alto_tab)
+                        players_position, board = move(board, hiddenBoard,flags, players_position, "d", board_width, board_height)
                 elif mov.lower() == "q":
                     break
                 elif mov.lower() == "f":
-                    visible, flags = flag(visible,pos_jugador,flags)
-                    if pos_jugador % ancho_tab != 1:
-                        pos_jugador, visible = move(visible, oculto,flags, pos_jugador, "a", ancho_tab, alto_tab)
+                    board, flags = flag(board,players_position,flags)
+                    if players_position % board_width != 1:
+                        players_position, board = move(board, hiddenBoard,flags, players_position, "a", board_width, board_height)
                     else:
-                        pos_jugador, visible = move(visible, oculto,flags, pos_jugador, "d", ancho_tab, alto_tab)
+                        players_position, board = move(board, hiddenBoard,flags, players_position, "d", board_width, board_height)
                 else:
-                    pos_jugador ,visible = move(visible,oculto,flags,pos_jugador,mov,ancho_tab,alto_tab)
+                    players_position ,board = move(board,hiddenBoard,flags,players_position,mov,board_width,board_height)
 
                 flags.sort()
-                #print(flags,pixel_mezcla)
                 if left == 0:
                     win()
-                    bloques = []
+                    blocks = []
                     flags = []
                     break
-
-
-
-
-#DEF FUNCION SI TOCA EN UN LUGAR QUE NO HAY UNA BOMBA
-#DEF FUNCION QUE SALVA BOMBAS
-#DEF FUNCION GANADORA

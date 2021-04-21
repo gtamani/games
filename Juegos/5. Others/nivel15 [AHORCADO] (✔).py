@@ -110,16 +110,7 @@ while True:
             time.sleep(1)
             acierto = True
 
-
-
-    #print(elegidas)
-    #print(pal)
-    #print(pal_mostrar)
-
-
     os.system("cls")
-
-
 
     if acierto is False:
         intentos +=1

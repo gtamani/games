@@ -9,10 +9,10 @@ font = pygame.font.SysFont("consolas", 36)
 
 def move(direction):
     itNormal, itBackwards = range(4), range(3, -1, -1)
-    moves = {276:[itNormal,itBackwards],    #LEFT
-             274:[itNormal,itNormal],       #DOWN
-             273:[itNormal,itBackwards],    #UP
-             275:[itNormal,itNormal]}       #RIGHT
+    moves = {1073741904:[itNormal,itBackwards],    #LEFT
+             1073741905:[itNormal,itNormal],       #DOWN
+             1073741906:[itNormal,itBackwards],    #UP
+             1073741903:[itNormal,itNormal]}       #RIGHT
 
     print("moving ",direction,"!")
     print(moves[direction][0])
@@ -25,7 +25,7 @@ def move(direction):
             for b in moves[direction][1]:
                 #print(a,b,board[a,b])
                     try:
-                        if direction == 275:
+                        if direction == 1073741903:
                             if board[a, b] == 0 and board[a, b - 1] != 0:
                                 board[a, b], board[a, b - 1] = board[a, b - 1], 0
                             elif board[a, b] == board[a, b - 1] and board[a, b - 1] not in fused:
@@ -34,7 +34,7 @@ def move(direction):
                                 fused.append(board[a, b - 1])
                                 print(fused)
 
-                        elif direction == 276:
+                        elif direction == 1073741904:
                             if board[a,b] == 0 and board[a,b+1] != 0:
                                 board[a,b], board[a,b+1] =  board[a,b+1],0
                             elif board[a,b] == board[a,b+1] and board[a,b+1] not in fused:
@@ -44,7 +44,7 @@ def move(direction):
                                 print(fused)
 
 
-                        elif direction == 273:
+                        elif direction == 1073741906:
                             if board[b, a] == 0 and board[b + 1, a] != 0:
                                 board[b,a], board[b + 1,a] = board[b+1,a], 0
                             elif board[b,a] == board[b+1,a] and board[b+1,a] not in fused:
@@ -52,7 +52,7 @@ def move(direction):
                                 board[b,a] = 0
                                 fused.append(board[b+1,a])
 
-                        elif direction == 274:
+                        elif direction == 1073741905:
                             if board[b, a] == 0 and board[b - 1, a] != 0:
                                 board[b, a], board[b - 1, a] = board[b - 1, a], 0
                             elif board[b, a] == board[b - 1, a] and board[b - 1, a] not in fused:
@@ -125,7 +125,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key in [273,274,275,276]:
+            print(event.key)
+            if event.key in [1073741903,1073741904,1073741905,1073741906]:
                 new_block(levels[currentLevel])
                 move(event.key)
                 wdw.fill((0,0,0))

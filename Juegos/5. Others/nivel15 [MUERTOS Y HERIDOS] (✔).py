@@ -1,8 +1,7 @@
 
 
-import random
-import time
-import os
+import random,time,os
+
 
 
 os.system("cls")
